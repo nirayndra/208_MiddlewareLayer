@@ -38,11 +38,19 @@ app.use((req, res, next) => {
 function successResponse(res, message, data, status = 200) {
     return res.status(status).json({
         success: true, message, data, error: null,
-    });
+    })
 }
 
 function errorResponse(res, message, status, detail  = null) {
     return res.status(status).json({
         success: false, message, data: null, error: detail,
-    });
+    })
 }
+
+// Joi Validation Schema
+const biodataSchema = Joi.object({
+    id: Joi.number().integer().positive(),
+    nama: Joi.string().trim().min(2).max(100).required(),
+    nim: Joi.string().trim().min(5).max(20).required(),
+    kelas: Joi.string().trim().min(1).max(20).required(),
+})
