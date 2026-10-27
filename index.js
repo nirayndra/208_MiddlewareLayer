@@ -27,7 +27,7 @@ app.use((req, res, next) => {
         console.log({
             method: req.method,
             url: req.originalUrl,
-            status: res.statusCode,
+            status: req.statusCode,
             duration: `${duration} ms`
         })
     })
