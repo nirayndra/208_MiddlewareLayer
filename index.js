@@ -111,7 +111,7 @@ app.post('/biodata', validateBody(biodataSchema), async (req, res) => {
     const result = await pool.query(
         `INSERT INTO biodata (id, nama, nim, kelas)
         VALUES ($1,$2,$3,$4)
-        RETURNING *`
+        RETURNING *`,
         [id ?? null, nama, nim, kelas]
     )
     return successResponse(res, 'Data berhasil ditambahkan', result.rows[0], 201)
@@ -141,7 +141,7 @@ app.put(
     },
 )
 
-app.delete('biodata/:id', validateParams(idSchema), async (req, res) => {
+app.delete('/biodata/:id', validateParams(idSchema), async (req, res) => {
     const {id} = req.params
     const result = await pool.query(
         `DELETE FROM biodata WHERE id=$1 RETURNING *`,
