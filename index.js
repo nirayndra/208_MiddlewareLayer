@@ -118,7 +118,7 @@ app.post('/biodata', validateBody(biodataSchema), async (req, res) => {
 })
 
 app.put(
-    "biodata/:id",
+    '/biodata/:id',
     validateParams(idSchema),
     validateBody(
         biodataSchema
@@ -140,3 +140,33 @@ app.put(
         return successResponse(res, "Data berhasil diperbarui", result.rows[0])
     },
 )
+
+app.delete('biodata/:id', validateParams(idSchema), async (req, res) => {
+    const {id} = req.params
+    const result = await pool.query(
+        `DELETE FROM biodata WHERE id=$1 RETURNING *`,
+        [id]
+    )
+    if (result.rowCount === 0) {
+        return errorResponse(res, "Data tidak ditemukan :(", 404)
+    }
+    return successResponse(res, "Data berhasil dihapus", result.rows[0])
+})
+
+//if route tidak ditemukan
+app.use((req, res) => {
+    return errorResponse(res, "Endpoint tidak ditemukan", 404)
+})
+
+//global error handling
+app.use((err, req, res, next) => {
+    console.error(err)
+    if (res.headersSent) {
+        return next(err)
+    }
+    return errorResponse(res, "Terjadi kesalahan pada server", 500, err.message)
+})
+
+app.listen(port, () => {
+    console.log(`App running on http://localhost:${port}`)
+});
